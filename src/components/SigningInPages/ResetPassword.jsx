@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { account } from "../../appwrite/config";
 import { homeContext } from "../Layout/Layout";
 import { NavLink, useNavigate } from "react-router-dom";
+import { auth } from "../../firebase/auth";
+import { confirmPasswordReset } from "firebase/auth";
 
 function ResetPassword() {
   const { toast, Bounce, ToastContainer } = useContext(homeContext);
@@ -14,16 +15,10 @@ function ResetPassword() {
   const handleNewPassword = async (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get("userId");
-    const secret = urlParams.get("secret");
+    const oobCode = urlParams.get("oobCode");
 
     try {
-      const response = await account.updateRecovery(
-        userId,
-        secret,
-        password.newPassword,
-        password.confirmPassword
-      );
+      await confirmPasswordReset(auth, oobCode, password.newPassword);
       toast.success("Password reset successfully", {
         position: "top-right",
         autoClose: 1400,
@@ -35,7 +30,6 @@ function ResetPassword() {
         transition: Bounce,
       });
       setTimeout(() => navigate("/login"), 2400);
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

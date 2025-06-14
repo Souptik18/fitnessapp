@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { account } from "../../appwrite/config";
+import { auth } from "../../firebase/auth";
+import { signOut } from "firebase/auth";
 import applogo from "../../assets/appLogo.jpg";
 import { homeContext } from "../Layout/Layout";
 
@@ -9,7 +10,6 @@ function Navbar() {
     toast,
     ToastContainer,
     Bounce,
-    isLoggedIn,
     accountName,
     setaccountName,
     Loader,
@@ -20,14 +20,10 @@ function Navbar() {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
-  useEffect(() => {
-    isLoggedIn();
-  }, []);
 
   const handleLogout = async () => {
     try {
-      const loggingOUT = await account.deleteSession("current");
-      // console.log(loggingOUT);
+      await signOut(auth);
       setaccountName(null);
       toast.success("Resting time!! ", {
         position: "top-right",

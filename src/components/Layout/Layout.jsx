@@ -4,7 +4,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { account } from "../../appwrite/config";
+import { auth } from "../../firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import ContentLoader from "./ContentLoader";
 import Loader from "./Loader";
 
@@ -23,25 +24,16 @@ function Layout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    isLoggedIn();
-  }, []);
-
-  useEffect(() => {
-    // console.log(accountName);
-    // console.log(emailName);
-    isLoggedIn();
-  }, [accountName, emailName]);
-
-  const isLoggedIn = async () => {
-    try {
-      const signedIntoAccount = await account.get("current");
-      setaccountName(signedIntoAccount.name);
-      setEmailName(signedIntoAccount.email);
-    } catch (error) {
-      console.log("Authentication error:", error);
-      navigate("/login");
-    }
-  };
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setaccountName(user.displayName || user.email);
+        setEmailName(user.email);
+      } else {
+        navigate("/login");
+      }
+    });
+    return unsub;
+  }, [navigate]);
 
   return (
     <homeContext.Provider
@@ -54,7 +46,6 @@ function Layout() {
         emailName,
         setaccountName,
         accountName,
-        isLoggedIn,
       }}
     >
       {accountName ? (
