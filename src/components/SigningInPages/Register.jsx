@@ -5,7 +5,7 @@ import { Bounce, ToastContainer } from "react-toastify";
 import {
   auth,
   provider,
-} from "../../firebase/auth";
+} from "../../firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,

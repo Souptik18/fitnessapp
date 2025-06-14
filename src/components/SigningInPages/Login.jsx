@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { NotificationContext } from "./LayoutLogin";
 import { Bounce } from "react-toastify";
-import { auth, provider } from "../../firebase/auth";
+import { auth, provider } from "../../firebase";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 //Notes
