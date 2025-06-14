@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { account } from "../../appwrite/config";
 import { NavLink, useNavigate } from "react-router-dom";
 import { homeContext } from "../Layout/Layout";
+import { auth, provider } from "../../firebase";
+import { sendPasswordResetEmail, signInWithPopup } from "firebase/auth";
 function ForgotPassword() {
   const { toast, Bounce, ToastContainer } = useContext(homeContext);
   const [email, setEmail] = useState("");
@@ -9,10 +10,9 @@ function ForgotPassword() {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await account.createRecovery(
-        email,
-        "https://fitness-app-souptik018.vercel.app/resetpassword"
-      );
+      await sendPasswordResetEmail(auth, email, {
+        url: "https://fitness-app-souptik018.vercel.app/resetpassword",
+      });
       toast.success("Reset link sent to your email", {
         position: "top-right",
         autoClose: 2200,
@@ -34,12 +34,8 @@ function ForgotPassword() {
   };
   const signInWithGoogle = async () => {
     try {
-      const response = await account.createOAuth2Session(
-        "google",
-        "https://fitness-app-souptik018.vercel.app/home",
-        "https://fitness-app-souptik018.vercel.app/fail"
-      );
-      console.log(response);
+      await signInWithPopup(auth, provider);
+      navigate("/home");
     } catch (error) {
       toast.error("Failed to sign in with Google", {
         position: "top-right",
@@ -53,19 +49,6 @@ function ForgotPassword() {
         transition: Bounce,
       });
       console.log("Google sign-in error:", error);
-    }
-  };
-  const signInWithgithub = async () => {
-    try {
-      const response = await account.createOAuth2Session(
-        "github",
-        "https://fitness-app-souptik018.vercel.app/home",
-        "https://fitness-app-souptik018.vercel.app/fail"
-      );
-
-      console.log(response);
-    } catch (error) {
-      console.log(error);
     }
   };
   return (
@@ -172,18 +155,6 @@ function ForgotPassword() {
                     </svg>
                   </span>
                   Sign in with Google
-                </button>
-                <button
-                  onClick={() => signInWithgithub()}
-                  type="button"
-                  className="relative inline-flex w-full items-center justify-center rounded-md border border-gray-400 bg-slate-400 px-3.5 py-2.5 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:bg-gray-100 focus:text-black focus:outline-none"
-                >
-                  <img
-                    className="h-6 w-6 mr-2"
-                    src="https://static-00.iconduck.com/assets.00/social-github-icon-256x250-yv67pnv6.png"
-                    alt=""
-                  />
-                  Sign in with Github
                 </button>
               </div>
             </div>

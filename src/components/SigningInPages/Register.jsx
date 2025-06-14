@@ -1,9 +1,17 @@
 import React, { useContext, useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
-import { account } from "../../appwrite/config";
 import { NotificationContext } from "./LayoutLogin";
 import { Bounce, ToastContainer } from "react-toastify";
-import { ID } from "appwrite";
+import {
+  auth,
+  provider,
+} from "../../firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -13,21 +21,9 @@ const Register = () => {
   const navigate = useNavigate();
   const handleRegister = async () => {
     try {
-      const response = await account.create(
-        ID.unique(),
-        email,
-        password,
-        username
-      );
-      // console.log(response);
-      const loggedIn = await account.createEmailPasswordSession(
-        email,
-        password
-      );
-      // console.log(loggedIn);
-      await account.createVerification(
-        "https://fitness-app-souptik018.vercel.app/verification"
-      );
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCred.user, { displayName: username });
+      await sendEmailVerification(userCred.user);
 
       toast.success("Verify your email first 🏃 !!", {
         position: "top-right",
@@ -54,18 +50,14 @@ const Register = () => {
         theme: "dark",
         transition: Bounce,
       });
-      console.log("Check this error", error);
+      console.log("Registration error", error);
     }
   };
 
   const signInWithGoogle = async () => {
     try {
-      const response = await account.createOAuth2Session(
-        "google",
-        "https://fitness-app-souptik018.vercel.app/home",
-        "https://fitness-app-souptik018.vercel.app/fail"
-      );
-      // console.log(response);
+      await signInWithPopup(auth, provider);
+      navigate("/home");
     } catch (error) {
       toast.error("Failed to sign in with Google", {
         position: "top-right",
@@ -79,19 +71,6 @@ const Register = () => {
         transition: Bounce,
       });
       console.log("Google sign-in error:", error);
-    }
-  };
-  const signInWithgithub = async () => {
-    try {
-      const response = await account.createOAuth2Session(
-        "github",
-        "https://fitness-app-souptik018.vercel.app/home",
-        "https://fitness-app-souptik018.vercel.app/fail"
-      );
-
-      // console.log(response);
-    } catch (error) {
-      console.log(error);
     }
   };
   const handleSubmit = async (e) => {
@@ -231,18 +210,6 @@ const Register = () => {
                   </svg>
                 </span>
                 Sign up with Google
-              </button>
-              <button
-                onClick={() => signInWithgithub()}
-                type="button"
-                className="relative inline-flex w-full items-center justify-center rounded-md border border-gray-400 bg-white px-3.5 py-2.5 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:bg-gray-100 focus:text-black focus:outline-none"
-              >
-                <img
-                  className="h-6 w-6 mr-2"
-                  src="https://img.icons8.com/?size=256&id=s1rwrv9mNnN4&format=png"
-                  alt=""
-                />
-                Sign in with Github
               </button>
             </div>
           </div>
