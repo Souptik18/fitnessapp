@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { homeContext } from "../Layout/Layout";
-import { auth } from "../../firebase/auth";
+import { auth } from "../../firebase";
 import { applyActionCode } from "firebase/auth";
 
 function Verify() {

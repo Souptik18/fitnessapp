@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase/auth";
+import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
 import applogo from "../../assets/appLogo.jpg";
 import { homeContext } from "../Layout/Layout";

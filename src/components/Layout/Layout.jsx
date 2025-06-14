@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { auth } from "../../firebase/auth";
+import { auth } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import ContentLoader from "./ContentLoader";
 import Loader from "./Loader";
