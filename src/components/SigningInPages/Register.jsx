@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { NotificationContext } from "./LayoutLogin";
 import { Bounce, ToastContainer } from "react-toastify";
 import {
   auth,
   provider,
-} from "../../firebase";
+} from "@/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,

@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { homeContext } from "../Layout/Layout";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
+import { auth } from "@/firebase";
 import { confirmPasswordReset } from "firebase/auth";
 
 function ResetPassword() {

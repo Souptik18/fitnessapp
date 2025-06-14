@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { homeContext } from "../Layout/Layout";
-import { auth, provider } from "../../firebase";
+import { auth, provider } from "@/firebase";
 import { sendPasswordResetEmail, signInWithPopup } from "firebase/auth";
 function ForgotPassword() {
   const { toast, Bounce, ToastContainer } = useContext(homeContext);

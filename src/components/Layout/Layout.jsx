@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { auth } from "../../firebase";
+import { auth } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import ContentLoader from "./ContentLoader";
 import Loader from "./Loader";

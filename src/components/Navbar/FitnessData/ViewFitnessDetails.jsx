@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import { auth, db } from "../../../firebase";
+import { useContext, useEffect, useState } from "react";
+import { auth, db } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { homeContext } from "../../Layout/Layout";
-import Loader from "../../Layout/Loader";
 
 function ViewFitnessDetails() {
   const { ContentLoader, toast, Bounce } = useContext(homeContext);
