@@ -1,8 +1,9 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { account } from "../../appwrite/config";
 import { NotificationContext } from "./LayoutLogin";
 import { Bounce } from "react-toastify";
+import { auth, provider } from "../../firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 //Notes
 // google login - working successfully
@@ -16,11 +17,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      // Attempt login
-      const loggedIn = await account.createEmailPasswordSession(
-        email,
-        password
-      );
+      await signInWithEmailAndPassword(auth, email, password);
       toast.success("Get In Quickly 🏃 !!", {
         position: "top-right",
         autoClose: 1800,
@@ -31,50 +28,28 @@ function Login() {
         theme: "dark",
         transition: Bounce,
       });
-      // console.log(account.get());
       setTimeout(() => navigate("/home"), 2800);
     } catch (error) {
       console.error(error.message);
-      if (
-        error.message ===
-        "Invalid credentials. Please check the email and password."
-      ) {
-        toast.error("🦄 Check credentials!", {
-          position: "top-right",
-          autoClose: 1800,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-      }
+      toast.error("🦄 Check credentials!", {
+        position: "top-right",
+        autoClose: 1800,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
       navigate("/login");
     }
   };
 
   const signInWithGoogle = async () => {
     try {
-      const response = await account.createOAuth2Session(
-        "google",
-        "https://fitness-app-souptik018.vercel.app/home",
-        "https://fitness-app-souptik018.vercel.app/fail"
-      );
-      // console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const signInWithgithub = async () => {
-    try {
-      const response = await account.createOAuth2Session(
-        "github",
-        "https://fitness-app-souptik018.vercel.app/home",
-        "https://fitness-app-souptik018.vercel.app/fail"
-      );
-      // console.log(response);
+      await signInWithPopup(auth, provider);
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
@@ -197,18 +172,6 @@ function Login() {
                     </svg>
                   </span>
                   Sign in with Google
-                </button>
-                <button
-                  onClick={() => signInWithgithub()}
-                  type="button"
-                  className="relative inline-flex w-full items-center justify-center rounded-md border border-gray-400 bg-slate-400 px-3.5 py-2.5 font-semibold text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-black focus:bg-gray-100 focus:text-black focus:outline-none"
-                >
-                  <img
-                    className="h-6 w-6 mr-2"
-                    src="https://img.icons8.com/?size=256&id=s1rwrv9mNnN4&format=png"
-                    alt=""
-                  />
-                  Sign in with Github
                 </button>
               </div>
             </div>

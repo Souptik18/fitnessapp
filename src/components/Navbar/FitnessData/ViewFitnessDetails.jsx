@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { account, database } from "../../../appwrite/config";
-import { Query } from "appwrite";
+import { auth, db } from "../../../firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { homeContext } from "../../Layout/Layout";
 import Loader from "../../Layout/Loader";
 
@@ -9,32 +10,32 @@ function ViewFitnessDetails() {
   const [accountEmail, setAccountEmail] = useState();
   const [fitnessData, setFitnessData] = useState();
   const [loaded, setLoaded] = useState(false);
-  const dbId = import.meta.env.VITE_APPWRITE_DB_ID;
-  const dbCollectionId = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
+
 
   useEffect(() => {
-    const fetchAccountEmail = async () => {
-      try {
-        const currentAccount = await account.get("current");
-        setAccountEmail(currentAccount.email);
-      } catch (error) {
-        console.log(error);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAccountEmail(user.email);
       }
-    };
-    fetchAccountEmail();
+    });
+    return unsub;
   }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (accountEmail) {
-          const response = await database.listDocuments(dbId, dbCollectionId, [
-            Query.equal("email", [accountEmail]),
-          ]);
-          const updatedElement =
-            response.documents[response.documents.length - 1];
-          const convertData = JSON.parse(updatedElement.formData);
-          setFitnessData(convertData);
+          const q = query(
+            collection(db, "fitnessData"),
+            where("email", "==", accountEmail)
+          );
+          const snap = await getDocs(q);
+          const docs = snap.docs.map((d) => d.data());
+          const last = docs[docs.length - 1];
+          if (last) {
+            const convertData = JSON.parse(last.formData);
+            setFitnessData(convertData);
+          }
         }
       } catch (error) {
         console.log("error", error);

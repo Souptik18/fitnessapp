@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ID } from "appwrite";
-import { database } from "../../../appwrite/config";
+import { db } from "../../../firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
 import { homeContext } from "../../Layout/Layout";
 
 function FitnessDetails() {
@@ -13,8 +13,6 @@ function FitnessDetails() {
     comments: "",
   });
 
-  const dbId = import.meta.env.VITE_APPWRITE_DB_ID;
-  const dbCollectionId = import.meta.env.VITE_APPWRITE_COLLECTION_ID;
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -38,16 +36,10 @@ function FitnessDetails() {
     } else {
       const formDataString = JSON.stringify(formData);
       try {
-        const response = await database.createDocument(
-          dbId,
-          dbCollectionId,
-          ID.unique(),
-          {
-            email: emailName,
-            formData: formDataString,
-          }
-        );
-        console.log(response);
+        await addDoc(collection(db, "fitnessData"), {
+          email: emailName,
+          formData: formDataString,
+        });
         toast.success("Data saved successfully", {
           position: "top-right",
           autoClose: 2800,
