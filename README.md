@@ -29,5 +29,3 @@ The app helps users track workouts, monitor progress, and get personalized fitne
 
 ---
 
-## 📂 Folder Structure
-
